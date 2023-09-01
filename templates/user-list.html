@@ -1,0 +1,138 @@
+<div class="header"></div>
+
+<div
+  class="main-holder"
+  ng-controller="UserListController as userListController"
+>
+  <div class="user-list">
+    <div class="action-row">
+      <button class="button_create" ng-click="userListController.createUser()">
+        Create User
+      </button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>username</th>
+          <th>first name</th>
+          <th>last name</th>
+          <th>email</th>
+          <th>type</th>
+        </tr>
+      </thead>
+
+      <tr
+        ng-repeat="user in userListController.users"
+        ng-click="userListController.selectUser(user)"
+      >
+        <td>{{user.username}}</td>
+        <td>{{user.first_name}}</td>
+        <td>{{user.last_name}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.user_type}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div
+    class="user-details-holder"
+    ng-if="userListController.store.selectedUser || userListController.store.isNewUser"
+    ng-controller="UserDetailController as userDetailController"
+  >
+    <!-- ng-if="userDetailController.editMode" -->
+    <div class="user-card">
+      <div class="user-card__header">
+        <div class="user-card__name">
+          {{userDetailController.user.first_name + ' '+
+          userDetailController.user.last_name}}
+        </div>
+
+        <div
+          class="user-card__close"
+          ng-click="userDetailController.toggleEditMode()"
+        >
+          X
+        </div>
+      </div>
+      <form name="editForm" validate class="user-info">
+        <div class="user-card__input-holer">
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            ng-model="userDetailController.user.username"
+            required
+          />
+        </div>
+
+        <div class="user-card__input-holer">
+          <label for="first_name">First name:</label>
+          <input
+            type="text"
+            id="first_name"
+            ng-model="userDetailController.user.first_name"
+            required
+          />
+        </div>
+
+        <div class="user-card__input-holer">
+          <label for="last_name">Last name:</label>
+          <input
+            type="text"
+            name="last_name"
+            ng-model="userDetailController.user.last_name"
+            required
+          />
+        </div>
+        <div class="user-card__input-holer">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            name="email"
+            ng-model="userDetailController.user.email"
+            ng-required
+          />
+        </div>
+
+        <label for="user_type">Type:</label>
+        <select
+          name="user_type"
+          ng-model="userDetailController.user.user_type"
+          required
+        >
+          <option value="Admin">Администратор</option>
+          <option value="Driver">Водитель</option>
+        </select>
+
+        <div class="action-row action-row-sb">
+          <button
+            ng-if="!userDetailController.store.isNewUser"
+            class="button_save"
+            type="submit"
+            ng-disabled="editForm.$invalid"
+            ng-click="userDetailController.saveUser()"
+          >
+            Save
+          </button>
+          <button
+            ng-if="userDetailController.store.isNewUser"
+            class="button_save"
+            type="submit"
+            ng-disabled="editForm.$invalid"
+            ng-click="userDetailController.createUser()"
+          >
+            Create
+          </button>
+          <button
+            ng-if="!userDetailController.store.isNewUser"
+            class="button_delete"
+            ng-click="userDetailController.deleteUser()"
+          >
+            Delete
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
