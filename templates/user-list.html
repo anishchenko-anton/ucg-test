@@ -1,12 +1,27 @@
-<div class="header"></div>
-
+<div class="error-bar" ng-controller="StateController as stateCtrl">
+  <div
+    class="message message_error"
+    ng-if="stateCtrl.activeStatusState.errorMessage"
+  >
+    {{stateCtrl.activeStatusState.errorMessage}}
+  </div>
+  <div
+    class="message message_success"
+    ng-if="stateCtrl.activeStatusState.successMessage"
+  >
+    {{stateCtrl.activeStatusState.successMessage}}
+  </div>
+</div>
 <div
   class="main-holder"
   ng-controller="UserListController as userListController"
 >
   <div class="user-list">
     <div class="action-row">
-      <button class="button_create" ng-click="userListController.createUser()">
+      <button
+        class="button_create"
+        ng-click="userListController.toggleCreateUserForm()"
+      >
         Create User
       </button>
     </div>
@@ -40,7 +55,6 @@
     ng-if="userListController.store.selectedUser || userListController.store.isNewUser"
     ng-controller="UserDetailController as userDetailController"
   >
-    <!-- ng-if="userDetailController.editMode" -->
     <div class="user-card">
       <div class="user-card__header">
         <div class="user-card__name">
@@ -52,7 +66,7 @@
           class="user-card__close"
           ng-click="userDetailController.toggleEditMode()"
         >
-          X
+          <!-- X -->
         </div>
       </div>
       <form name="editForm" validate class="user-info">
@@ -60,7 +74,8 @@
           <label for="username">Username:</label>
           <input
             type="text"
-            id="username"
+            unique-username="userDetailController.user.username"
+            name="username"
             ng-model="userDetailController.user.username"
             required
           />
@@ -70,7 +85,7 @@
           <label for="first_name">First name:</label>
           <input
             type="text"
-            id="first_name"
+            name="first_name"
             ng-model="userDetailController.user.first_name"
             required
           />
@@ -94,23 +109,42 @@
             ng-required
           />
         </div>
+        <div class="user-card__input-holer">
+          <label for="user_type">Type:</label>
+          <select
+            name="user_type"
+            ng-model="userDetailController.user.user_type"
+            required
+          >
+            <option value="Admin">Admin</option>
+            <option value="Driver">Driver</option>
+          </select>
+        </div>
 
-        <label for="user_type">Type:</label>
-        <select
-          name="user_type"
-          ng-model="userDetailController.user.user_type"
-          required
+        <div class="user-card__input-holer">
+          <label for="email">Password:</label>
+          <input
+            type="password"
+            name="password"
+            strong-password="userDetailController.user.password"
+            ng-model="userDetailController.user.password"
+            ng-required
+          />
+        </div>
+
+        <!-- <span
+          class="errorMessage"
+          ng-show="editForm.password.$dirty && editForm.password.$error.strongPassword"
         >
-          <option value="Admin">Администратор</option>
-          <option value="Driver">Водитель</option>
-        </select>
+          Password not strong. min length 8. at least one number and one letter
+        </span> -->
 
         <div class="action-row action-row-sb">
           <button
             ng-if="!userDetailController.store.isNewUser"
             class="button_save"
             type="submit"
-            ng-disabled="editForm.$invalid"
+            ng-disabled="editForm.$invalid || editForm.password.$error.strongPassword || editForm.username.$error.uniqueUsername"
             ng-click="userDetailController.saveUser()"
           >
             Save
@@ -119,7 +153,7 @@
             ng-if="userDetailController.store.isNewUser"
             class="button_save"
             type="submit"
-            ng-disabled="editForm.$invalid"
+            ng-disabled="editForm.$invalid || editForm.password.$error.strongPassword || editForm.username.$error.uniqueUsername"
             ng-click="userDetailController.createUser()"
           >
             Create
